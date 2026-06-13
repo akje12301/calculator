@@ -1,0 +1,507 @@
+Chapter 1. Web site와 Web Page
+
+HTML Page를 직접 만들어 본다.
+HTML, CSS, JavaScript의 개념이해
+Ai Chat을 활용하여 계산기 Web Page 만들기
+
+-1. Web Site란?
+
+인터넷에 Contents가 게시 되어 있는 장소 <(접근방식)- Web Brower
+
+server와 client가 서로 요청(request) 하고 응답(response)하며 동작한다.
+
+// Server : Web site의 내용 보관 <(client가 요청)- 파일 전송
+// Client : Web site의 파일 요청 <(Code를 전송받음)- brower에서 실행
+
+정리 : Web Brower의 주소창에 URL(Uniform Resource Locator)을 입력 -> sever가 file(code) 전송
+-> web Brower가 실행
+
+//위 (정리) 내용을 사진으로 표현//
+
+-2. web page의 언어 HTML
+
+Browser가 읽는 파일의 형식이 HTML이다.
+web page는 모두 HTML code로 만들어진다. (web site에서 HTML code를 직접 확인해보자)
+
+Vscode에서 /index.html/ 파일을 만들고 아래 내용을 작성하고 web browser에서 열어 실행해보자
+
+/"html"
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>내 첫 페이지</title>
+    </head>
+    <body>
+        <h1>안녕하세요</h1>
+        <p>이게 web page입니다.</p>
+    </body>
+</html>
+
+/"html"
+
+-> Brower -> 파일 일기 -> 화면에 그려준다. <우리 모든 web page가 이런 형식이다.>
+
+-3. Web page의 Desigh, CSS(Cascading style sheets)
+
+HTML만으로 디자인 하기 힘들떄 : CSS를 사용해서 (Color, background, layout)을 자세하게 설정
+
+-각 요소의 색상, 배경색, 버튼모양, 레이아웃 정렬 등을 설정한다.
+-'<style>' tage를 이용하여 작성한다.
+
+> 계산기 실습:
+
+1. HTML 코드 생성
+/"HTML"
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>사칙연산 계산기</title>
+</head>
+<body>
+
+    <!-- 계산기 전체 감싸는 틀 -->
+    <div class="calculator">
+        
+        <!-- 디스플레이 (결과 및 입력창) -->
+        <div class="calculator-display">
+            <input type="text" id="display" value="0" readonly>
+        </div>
+
+        <!-- 버튼 패드 -->
+        <div class="calculator-buttons">
+            <!-- 기능 버튼 라인 -->
+            <button type="button" class="btn-clear">C</button>
+            <button type="button" class="btn-toggle">+/-</button>
+            <button type="button" class="btn-percent">%</button>
+            <button type="button" class="btn-operator">/</button>
+
+            <!-- 7, 8, 9, 곱하기 -->
+            <button type="button" class="btn-number">7</button>
+            <button type="button" class="btn-number">8</button>
+            <button type="button" class="btn-number">9</button>
+            <button type="button" class="btn-operator">*</button>
+
+            <!-- 4, 5, 6, 빼기 -->
+            <button type="button" class="btn-number">4</button>
+            <button type="button" class="btn-number">5</button>
+            <button type="button" class="btn-number">6</button>
+            <button type="button" class="btn-operator">-</button>
+
+            <!-- 1, 2, 3, 더하기 -->
+            <button type="button" class="btn-number">1</button>
+            <button type="button" class="btn-number">2</button>
+            <button type="button" class="btn-number">3</button>
+            <button type="button" class="btn-operator">+</button>
+
+            <!-- 0, 소수점, 등호 -->
+            <!-- 일반적인 계산기는 '0' 버튼이 가로로 넓은 경우가 많습니다 -->
+            <button type="button" class="btn-number btn-zero">0</button>
+            <button type="button" class="btn-dot">.</button>
+            <button type="button" class="btn-equals">=</button>
+        </div>
+
+    </div>
+
+</body>
+</html>
+/ (여긴 접고 필수 있게)
+
+2. HTML을 꾸밀 CSS코드 생성
+/"HTML"
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>사칙연산 계산기 - 다크 모드</title>
+    <style>
+        /* 1. 기본 배경 및 정렬 설정 */
+        body {
+            background-color: #1a1a1a; /* 전체 화면 어두운 배경 */
+            font-family: 'Segoe UI', Arial, sans-serif;
+            display: flex;
+            justify-content: center; /* 가로 중앙 정렬 */
+            align-items: center;     /* 세로 중앙 정렬 */
+            height: 100vh;           /* 화면 꽉 채우기 */
+            margin: 0;
+        }
+
+        /* 2. 계산기 몸체 */
+        .calculator {
+            background-color: #262626; /* 계산기 본체 색상 */
+            width: 320px;
+            padding: 20px;
+            border-radius: 24px;       /* 부드러운 라운딩 */
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); /* 은은한 그림자 */
+        }
+
+        /* 3. 디스플레이(결과창) 스타일 */
+        .display-container {
+            margin-bottom: 20px;
+        }
+        .display-container input {
+            width: 100%;
+            height: 80px;
+            background-color: #1a1a1a; /* 본체보다 더 어두운 액정 화면 */
+            border: none;
+            border-radius: 12px;
+            color: #ffffff;            /* 글자색 흰색 */
+            font-size: 2.5rem;
+            text-align: right;         /* 숫자는 우측 정렬 */
+            padding: 10px 20px;
+            box-sizing: border-box;    /* 패딩 포함 크기 계산 */
+            outline: none;             /* 클릭 시 테두리 제거 */
+        }
+
+        /* 4. 버튼들을 바둑판 형태로 배치 (Grid 레이아웃) */
+        .buttons-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); /* 4열로 균등 분할 */
+            gap: 12px;                             /* 버튼 사이 간격 */
+        }
+
+        /* 5. 공통 버튼 스타일 */
+        button {
+            height: 60px;
+            border: none;
+            border-radius: 50%;        /* 시중 계산기 특유의 동그란 버튼 모양 */
+            font-size: 1.4rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.15s, transform 0.05s;
+        }
+
+        /* 버튼을 누를 때 쏙 들어가는 효과 */
+        button:active {
+            transform: scale(0.93);
+        }
+
+        /* 6. 역할별 버튼 색상 분배 */
+        /* 숫자 버튼 (어두운 회색) */
+        .btn-number {
+            background-color: #404040;
+            color: #ffffff;
+        }
+        .btn-number:hover { background-color: #535353; }
+
+        /* 상단 기능 버튼 (밝은 회색) */
+        .btn-function {
+            background-color: #a5a5a5;
+            color: #000000;
+        }
+        .btn-function:hover { background-color: #d4d4d4; }
+
+        /* 우측 연산자 및 등호 버튼 (주황색) */
+        .btn-operator {
+            background-color: #ff9f0a;
+            color: #ffffff;
+        }
+        .btn-operator:hover { background-color: #fca92c; }
+
+        /* 7. '0' 버튼 전용 (가로로 긴 캡슐 모양 변환) */
+        .btn-zero {
+            grid-column: span 2;  /* 혼자서 2칸을 차지하도록 지정 */
+            border-radius: 30px;  /* 길어지므로 동그라미에서 알약 모양으로 변경 */
+            text-align: left;     /* 왼쪽 정렬 */
+            padding-left: 25px;   /* 여백 추가 */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="calculator">
+        
+        <div class="display-container">
+            <input type="text" value="0" readonly>
+        </div>
+
+        <div class="buttons-grid">
+            <button type="button" class="btn-function">C</button>
+            <button type="button" class="btn-function">+/-</button>
+            <button type="button" class="btn-function">%</button>
+            <button type="button" class="btn-operator">/</button>
+
+            <button type="button" class="btn-number">7</button>
+            <button type="button" class="btn-number">8</button>
+            <button type="button" class="btn-number">9</button>
+            <button type="button" class="btn-operator">*</button>
+
+            <button type="button" class="btn-number">4</button>
+            <button type="button" class="btn-number">5</button>
+            <button type="button" class="btn-number">6</button>
+            <button type="button" class="btn-operator">-</button>
+
+            <button type="button" class="btn-number">1</button>
+            <button type="button" class="btn-number">2</button>
+            <button type="button" class="btn-number">3</button>
+            <button type="button" class="btn-operator">+</button>
+
+            <button type="button" class="btn-number btn-zero">0</button>
+            <button type="button" class="btn-number">.</button>
+            <button type="button" class="btn-operator">=</button>
+        </div>
+    </div>
+
+</body>
+</html>
+/
+(여긴 접고 필수 있게)
+
+3. 기능을 넣어줄 JavaScript 코드 생성
+/"HTML"
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>사칙연산 계산기 - 다크 모드</title>
+    <style>
+        /* 1. 기본 배경 및 정렬 설정 */
+        body {
+            background-color: #1a1a1a; /* 전체 화면 어두운 배경 */
+            font-family: 'Segoe UI', Arial, sans-serif;
+            display: flex;
+            justify-content: center; /* 가로 중앙 정렬 */
+            align-items: center;     /* 세로 중앙 정렬 */
+            height: 100vh;           /* 화면 꽉 채우기 */
+            margin: 0;
+        }
+
+        /* 2. 계산기 몸체 */
+        .calculator {
+            background-color: #262626; /* 계산기 본체 색상 */
+            width: 320px;
+            padding: 20px;
+            border-radius: 24px;       /* 부드러운 라운딩 */
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); /* 은은한 그림자 */
+        }
+
+        /* 3. 디스플레이(결과창) 스타일 */
+        .display-container {
+            margin-bottom: 20px;
+        }
+        .display-container input {
+            width: 100%;
+            height: 80px;
+            background-color: #1a1a1a; /* 본체보다 더 어두운 액정 화면 */
+            border: none;
+            border-radius: 12px;
+            color: #ffffff;            /* 글자색 흰색 */
+            font-size: 2.5rem;
+            text-align: right;         /* 숫자는 우측 정렬 */
+            padding: 10px 20px;
+            box-sizing: border-box;    /* 패딩 포함 크기 계산 */
+            outline: none;             /* 클릭 시 테두리 제거 */
+        }
+
+        /* 4. 버튼들을 바둑판 형태로 배치 (Grid 레이아웃) */
+        .buttons-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); /* 4열로 균등 분할 */
+            gap: 12px;                             /* 버튼 사이 간격 */
+        }
+
+        /* 5. 공통 버튼 스타일 */
+        button {
+            height: 60px;
+            border: none;
+            border-radius: 50%;        /* 시중 계산기 특유의 동그란 버튼 모양 */
+            font-size: 1.4rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.15s, transform 0.05s;
+        }
+
+        /* 버튼을 누를 때 쏙 들어가는 효과 */
+        button:active {
+            transform: scale(0.93);
+        }
+
+        /* 6. 역할별 버튼 색상 분배 */
+        /* 숫자 버튼 (어두운 회색) */
+        .btn-number {
+            background-color: #404040;
+            color: #ffffff;
+        }
+        .btn-number:hover { background-color: #535353; }
+
+        /* 상단 기능 버튼 (밝은 회색) */
+        .btn-function {
+            background-color: #a5a5a5;
+            color: #000000;
+        }
+        .btn-function:hover { background-color: #d4d4d4; }
+
+        /* 우측 연산자 및 등호 버튼 (주황색) */
+        .btn-operator {
+            background-color: #ff9f0a;
+            color: #ffffff;
+        }
+        .btn-operator:hover { background-color: #fca92c; }
+
+        /* 7. '0' 버튼 전용 (가로로 긴 캡슐 모양 변환) */
+        .btn-zero {
+            grid-column: span 2;  /* 혼자서 2칸을 차지하도록 지정 */
+            border-radius: 30px;  /* 길어지므로 동그라미에서 알약 모양으로 변경 */
+            text-align: left;     /* 왼쪽 정렬 */
+            padding-left: 25px;   /* 여백 추가 */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="calculator">
+        
+        <div class="display-container">
+            <input type="text" id="display" value="0" readonly>
+        </div>
+
+        <div class="buttons-grid">
+            <button type="button" class="btn-function">C</button>
+            <button type="button" class="btn-function">+/-</button>
+            <button type="button" class="btn-function">%</button>
+            <button type="button" class="btn-operator">/</button>
+
+            <button type="button" class="btn-number">7</button>
+            <button type="button" class="btn-number">8</button>
+            <button type="button" class="btn-number">9</button>
+            <button type="button" class="btn-operator">*</button>
+
+            <button type="button" class="btn-number">4</button>
+            <button type="button" class="btn-number">5</button>
+            <button type="button" class="btn-number">6</button>
+            <button type="button" class="btn-operator">-</button>
+
+            <button type="button" class="btn-number">1</button>
+            <button type="button" class="btn-number">2</button>
+            <button type="button" class="btn-number">3</button>
+            <button type="button" class="btn-operator">+</button>
+
+            <button type="button" class="btn-number btn-zero">0</button>
+            <button type="button" class="btn-number">.</button>
+            <button type="button" class="btn-operator">=</button>
+        </div>
+    </div>
+
+    <script>
+        // 변수 및 DOM 요소 초기화
+        const display = document.getElementById('display');
+        const buttons = document.querySelectorAll('button');
+        
+        let currentInput = '0';  // 현재 화면에 표시되는 문자열
+        let previousInput = ''; // 이전 연산 단계의 값
+        let operator = null;     // 선택된 연산자 (+, -, *, /)
+        let shouldResetDisplay = false; // 연산자 클릭 후 새로운 숫자를 입력받을지 여부
+
+        // 모든 버튼에 클릭 이벤트 추가
+        buttons.forEach(button => {
+            button.addEventListener('click', () => {
+                const buttonText = button.textContent;
+
+                // 1. 숫자 또는 소수점 버튼 클릭 시
+                if (button.classList.contains('btn-number')) {
+                    handleNumber(buttonText);
+                } 
+                // 2. 연산자 버튼 클릭 시 (+, -, *, /)
+                else if (button.classList.contains('btn-operator') && buttonText !== '=') {
+                    handleOperator(buttonText);
+                } 
+                // 3. 기능 버튼 클릭 시 (C, +/-, %, =)
+                else {
+                    handleFunction(buttonText);
+                }
+                
+                // 화면 업데이트
+                display.value = currentInput;
+            });
+        });
+
+        // 숫자 입력 처리 함수
+        function handleNumber(num) {
+            // 소수점 중복 입력 방지
+            if (num === '.' && currentInput.includes('.')) return;
+
+            // 새로 숫자를 입력해야 하거나 처음 초기 상태('0')일 때
+            if (currentInput === '0' || shouldResetDisplay) {
+                if (num === '.') {
+                    currentInput = '0.';
+                } else {
+                    currentInput = num;
+                }
+                shouldResetDisplay = false;
+            } else {
+                currentInput += num;
+            }
+        }
+
+        // 연산자 입력 처리 함수
+        function handleOperator(nextOperator) {
+            const value = parseFloat(currentInput);
+
+            // 이미 연산자가 선택되어 있고 새로운 숫자가 입력되기 전이라면 연산자만 교체
+            if (operator && shouldResetDisplay) {
+                operator = nextOperator;
+                return;
+            }
+
+            if (previousInput === '') {
+                previousInput = currentInput;
+            } else if (operator) {
+                const result = calculate(parseFloat(previousInput), value, operator);
+                currentInput = String(result);
+                previousInput = String(result);
+            }
+
+            shouldResetDisplay = true;
+            operator = nextOperator;
+        }
+
+        // 기능 버튼 처리 함수
+        function handleFunction(func) {
+            if (func === 'C') { // 초기화
+                currentInput = '0';
+                previousInput = '';
+                operator = null;
+                shouldResetDisplay = false;
+            } 
+            else if (func === '+/-') { // 양수/음수 전환
+                currentInput = String(parseFloat(currentInput) * -1);
+            } 
+            else if (func === '%') { // 퍼센트 계산 (100으로 나눔)
+                currentInput = String(parseFloat(currentInput) / 100);
+            } 
+            else if (func === '=') { // 결과 도출
+                if (!operator || shouldResetDisplay) return;
+
+                const result = calculate(parseFloat(previousInput), parseFloat(currentInput), operator);
+                currentInput = String(result);
+                previousInput = '';
+                operator = null;
+                shouldResetDisplay = true; // 계산 끝난 후 숫자 누르면 새로 시작
+            }
+        }
+
+        // 실제 사칙연산 수행 함수
+        function calculate(first, second, op) {
+            switch (op) {
+                case '+': return first + second;
+                case '-': return first - second;
+                case '*': return first * second;
+                case '/': 
+                    if (second === 0) return 'Error'; // 0으로 나눌 때 처리
+                    return first / second;
+                default: return second;
+            }
+        }
+    </script>
+</body>
+</html>
+/
+(여긴 접고 필수 있게)
+
+//마무리 정리
+1. Web site는 인터넷에 Contents가 게시 되어 있는 장소 <(접근방식)- Web Brower
+    server와 client가 서로 요청(request) 하고 응답(response)하며 동작한다.
+
+2. 만들때. HTML,CSS로 보여지는 틀을 잡고, JavaScript로 기능을 넣는다.

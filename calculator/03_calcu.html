@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>사칙연산 계산기 - 다크 모드</title>
+    <style>
+        /* 1. 기본 배경 및 정렬 설정 */
+        body {
+            background-color: #1a1a1a; /* 전체 화면 어두운 배경 */
+            font-family: 'Segoe UI', Arial, sans-serif;
+            display: flex;
+            justify-content: center; /* 가로 중앙 정렬 */
+            align-items: center;     /* 세로 중앙 정렬 */
+            height: 100vh;           /* 화면 꽉 채우기 */
+            margin: 0;
+        }
+
+        /* 2. 계산기 몸체 */
+        .calculator {
+            background-color: #262626; /* 계산기 본체 색상 */
+            width: 320px;
+            padding: 20px;
+            border-radius: 24px;       /* 부드러운 라운딩 */
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); /* 은은한 그림자 */
+        }
+
+        /* 3. 디스플레이(결과창) 스타일 */
+        .display-container {
+            margin-bottom: 20px;
+        }
+        .display-container input {
+            width: 100%;
+            height: 80px;
+            background-color: #1a1a1a; /* 본체보다 더 어두운 액정 화면 */
+            border: none;
+            border-radius: 12px;
+            color: #ffffff;            /* 글자색 흰색 */
+            font-size: 2.5rem;
+            text-align: right;         /* 숫자는 우측 정렬 */
+            padding: 10px 20px;
+            box-sizing: border-box;    /* 패딩 포함 크기 계산 */
+            outline: none;             /* 클릭 시 테두리 제거 */
+        }
+
+        /* 4. 버튼들을 바둑판 형태로 배치 (Grid 레이아웃) */
+        .buttons-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); /* 4열로 균등 분할 */
+            gap: 12px;                             /* 버튼 사이 간격 */
+        }
+
+        /* 5. 공통 버튼 스타일 */
+        button {
+            height: 60px;
+            border: none;
+            border-radius: 50%;        /* 시중 계산기 특유의 동그란 버튼 모양 */
+            font-size: 1.4rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.15s, transform 0.05s;
+        }
+
+        /* 버튼을 누를 때 쏙 들어가는 효과 */
+        button:active {
+            transform: scale(0.93);
+        }
+
+        /* 6. 역할별 버튼 색상 분배 */
+        /* 숫자 버튼 (어두운 회색) */
+        .btn-number {
+            background-color: #404040;
+            color: #ffffff;
+        }
+        .btn-number:hover { background-color: #535353; }
+
+        /* 상단 기능 버튼 (밝은 회색) */
+        .btn-function {
+            background-color: #a5a5a5;
+            color: #000000;
+        }
+        .btn-function:hover { background-color: #d4d4d4; }
+
+        /* 우측 연산자 및 등호 버튼 (주황색) */
+        .btn-operator {
+            background-color: #ff9f0a;
+            color: #ffffff;
+        }
+        .btn-operator:hover { background-color: #fca92c; }
+
+        /* 7. '0' 버튼 전용 (가로로 긴 캡슐 모양 변환) */
+        .btn-zero {
+            grid-column: span 2;  /* 혼자서 2칸을 차지하도록 지정 */
+            border-radius: 30px;  /* 길어지므로 동그라미에서 알약 모양으로 변경 */
+            text-align: left;     /* 왼쪽 정렬 */
+            padding-left: 25px;   /* 여백 추가 */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="calculator">
+        
+        <div class="display-container">
+            <input type="text" id="display" value="0" readonly>
+        </div>
+
+        <div class="buttons-grid">
+            <button type="button" class="btn-function">C</button>
+            <button type="button" class="btn-function">+/-</button>
+            <button type="button" class="btn-function">%</button>
+            <button type="button" class="btn-operator">/</button>
+
+            <button type="button" class="btn-number">7</button>
+            <button type="button" class="btn-number">8</button>
+            <button type="button" class="btn-number">9</button>
+            <button type="button" class="btn-operator">*</button>
+
+            <button type="button" class="btn-number">4</button>
+            <button type="button" class="btn-number">5</button>
+            <button type="button" class="btn-number">6</button>
+            <button type="button" class="btn-operator">-</button>
+
+            <button type="button" class="btn-number">1</button>
+            <button type="button" class="btn-number">2</button>
+            <button type="button" class="btn-number">3</button>
+            <button type="button" class="btn-operator">+</button>
+
+            <button type="button" class="btn-number btn-zero">0</button>
+            <button type="button" class="btn-number">.</button>
+            <button type="button" class="btn-operator">=</button>
+        </div>
+    </div>
+
+    <script>
+        // 변수 및 DOM 요소 초기화
+        const display = document.getElementById('display');
+        const buttons = document.querySelectorAll('button');
+        
+        let currentInput = '0';  // 현재 화면에 표시되는 문자열
+        let previousInput = ''; // 이전 연산 단계의 값
+        let operator = null;     // 선택된 연산자 (+, -, *, /)
+        let shouldResetDisplay = false; // 연산자 클릭 후 새로운 숫자를 입력받을지 여부
+
+        // 모든 버튼에 클릭 이벤트 추가
+        buttons.forEach(button => {
+            button.addEventListener('click', () => {
+                const buttonText = button.textContent;
+
+                // 1. 숫자 또는 소수점 버튼 클릭 시
+                if (button.classList.contains('btn-number')) {
+                    handleNumber(buttonText);
+                } 
+                // 2. 연산자 버튼 클릭 시 (+, -, *, /)
+                else if (button.classList.contains('btn-operator') && buttonText !== '=') {
+                    handleOperator(buttonText);
+                } 
+                // 3. 기능 버튼 클릭 시 (C, +/-, %, =)
+                else {
+                    handleFunction(buttonText);
+                }
+                
+                // 화면 업데이트
+                display.value = currentInput;
+            });
+        });
+
+        // 숫자 입력 처리 함수
+        function handleNumber(num) {
+            // 소수점 중복 입력 방지
+            if (num === '.' && currentInput.includes('.')) return;
+
+            // 새로 숫자를 입력해야 하거나 처음 초기 상태('0')일 때
+            if (currentInput === '0' || shouldResetDisplay) {
+                if (num === '.') {
+                    currentInput = '0.';
+                } else {
+                    currentInput = num;
+                }
+                shouldResetDisplay = false;
+            } else {
+                currentInput += num;
+            }
+        }
+
+        // 연산자 입력 처리 함수
+        function handleOperator(nextOperator) {
+            const value = parseFloat(currentInput);
+
+            // 이미 연산자가 선택되어 있고 새로운 숫자가 입력되기 전이라면 연산자만 교체
+            if (operator && shouldResetDisplay) {
+                operator = nextOperator;
+                return;
+            }
+
+            if (previousInput === '') {
+                previousInput = currentInput;
+            } else if (operator) {
+                const result = calculate(parseFloat(previousInput), value, operator);
+                currentInput = String(result);
+                previousInput = String(result);
+            }
+
+            shouldResetDisplay = true;
+            operator = nextOperator;
+        }
+
+        // 기능 버튼 처리 함수
+        function handleFunction(func) {
+            if (func === 'C') { // 초기화
+                currentInput = '0';
+                previousInput = '';
+                operator = null;
+                shouldResetDisplay = false;
+            } 
+            else if (func === '+/-') { // 양수/음수 전환
+                currentInput = String(parseFloat(currentInput) * -1);
+            } 
+            else if (func === '%') { // 퍼센트 계산 (100으로 나눔)
+                currentInput = String(parseFloat(currentInput) / 100);
+            } 
+            else if (func === '=') { // 결과 도출
+                if (!operator || shouldResetDisplay) return;
+
+                const result = calculate(parseFloat(previousInput), parseFloat(currentInput), operator);
+                currentInput = String(result);
+                previousInput = '';
+                operator = null;
+                shouldResetDisplay = true; // 계산 끝난 후 숫자 누르면 새로 시작
+            }
+        }
+
+        // 실제 사칙연산 수행 함수
+        function calculate(first, second, op) {
+            switch (op) {
+                case '+': return first + second;
+                case '-': return first - second;
+                case '*': return first * second;
+                case '/': 
+                    if (second === 0) return 'Error'; // 0으로 나눌 때 처리
+                    return first / second;
+                default: return second;
+            }
+        }
+    </script>
+</body>
+</html>
